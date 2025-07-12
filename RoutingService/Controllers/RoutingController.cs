@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MonitoreoGPS.Shared.Models;
-using Polly.CircuitBreaker;
-using Polly;
 using StackExchange.Redis;
+using System;
 using System.Text.Json;
+using System.Threading.Tasks;
+using MonitoreoGPS.Shared.Models;
 
 namespace RoutingService.Controllers
 {
@@ -11,10 +11,6 @@ namespace RoutingService.Controllers
     [Route("api/[controller]")]
     public class RoutingController : ControllerBase
     {
-        private static readonly AsyncCircuitBreakerPolicy _breaker =
-            Policy.Handle<Exception>()
-                  .CircuitBreakerAsync(2, TimeSpan.FromSeconds(30)); // Cambiado a 2 fallos
-
         private readonly IDatabase _redis;
 
         public RoutingController(IConnectionMultiplexer redis)
@@ -23,56 +19,42 @@ namespace RoutingService.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] VehicleCoordinate coord)
+        public async Task<IActionResult> Post([FromBody] VehicleCoordinate coordinate)
         {
+            var zoneKey = $"zone:{coordinate.VehicleId}";
+            var routeKey = $"route:{coordinate.VehicleId}";
+
+            // Intentar bloquear la zona
+            var locked = await _redis.StringSetAsync(
+                zoneKey,
+                "locked",
+                TimeSpan.FromMinutes(5), // Expira en 5 minutos
+                When.NotExists
+            );
+
+            if (!locked)
+            {
+                return StatusCode(423, "Zona ocupada");
+            }
+
             try
             {
-                return await _breaker.ExecuteAsync<IActionResult>(async () =>
+                // Generar ruta ficticia de ejemplo
+                var route = new VehicleCoordinate[]
                 {
-                    string zoneKey = $"{Math.Floor(coord.Latitude)}_{Math.Floor(coord.Longitude)}";
+                    coordinate,
+                    new VehicleCoordinate(coordinate.VehicleId, coordinate.Latitude + 0.001, coordinate.Longitude + 0.001, DateTime.UtcNow.AddSeconds(10))
+                };
 
-                    bool lockTaken = await _redis.StringSetAsync(
-                        "lock:" + zoneKey,
-                        "1",
-                        TimeSpan.FromSeconds(5),
-                        When.NotExists);
+                var serializedRoute = JsonSerializer.Serialize(route);
+                await _redis.StringSetAsync(routeKey, serializedRoute, TimeSpan.FromMinutes(10));
 
-                    if (!lockTaken)
-                    {
-                        return new ObjectResult("Zona ocupada") { StatusCode = 423 };
-                    }
-
-                    try
-                    {
-                        var route = new[] {
-                            new VehicleCoordinate(
-                                coord.VehicleId,
-                                coord.Latitude,
-                                coord.Longitude,
-                                coord.Timestamp),
-                            new VehicleCoordinate(
-                                coord.VehicleId,
-                                coord.Latitude + 0.01,
-                                coord.Longitude + 0.01,
-                                coord.Timestamp.AddSeconds(60))
-                        };
-
-                        await _redis.StringSetAsync(
-                            $"route:{coord.VehicleId}",
-                            JsonSerializer.Serialize(route),
-                            TimeSpan.FromMinutes(5));
-
-                        return new OkObjectResult(route);
-                    }
-                    finally
-                    {
-                        await _redis.KeyDeleteAsync("lock:" + zoneKey);
-                    }
-                });
+                return Ok(route);
             }
-            catch (BrokenCircuitException)
+            finally
             {
-                return StatusCode(503, "Circuit Breaker activado");
+                // Liberar la zona
+                await _redis.KeyDeleteAsync(zoneKey);
             }
         }
     }
