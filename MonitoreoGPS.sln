@@ -22,6 +22,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeolocationService.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuditService.Tests", "AuditService.Tests\AuditService.Tests.csproj", "{C34A972E-AA18-4748-940A-CC51F3A93136}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoutingService.Tests", "RoutingService.Tests\RoutingService.Tests.csproj", "{A117AFE0-7D15-47BD-9C1F-2354C9E1E003}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,10 @@ Global
 		{C34A972E-AA18-4748-940A-CC51F3A93136}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C34A972E-AA18-4748-940A-CC51F3A93136}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C34A972E-AA18-4748-940A-CC51F3A93136}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A117AFE0-7D15-47BD-9C1F-2354C9E1E003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A117AFE0-7D15-47BD-9C1F-2354C9E1E003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A117AFE0-7D15-47BD-9C1F-2354C9E1E003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A117AFE0-7D15-47BD-9C1F-2354C9E1E003}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
