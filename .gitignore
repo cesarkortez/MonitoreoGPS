@@ -1,0 +1,27 @@
+# Archivos de IDE y entornos
+.vs/
+.vscode/
+bin/
+obj/
+.DS_Store
+*.user
+*.suo
+*.lock.json
+
+# Docker
+docker-compose.override.yml
+
+# Dependencias
+node_modules/
+jspm_packages/
+
+# Logs y bases de datos locales
+*.log
+*.sqlite
+
+# Reportes de cobertura
+CoverageReport/
+
+# Configuración de entorno
+.env
+

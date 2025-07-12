@@ -1,0 +1,117 @@
+name: MonitoreoGPS CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  DOCKER_REGISTRY: ghcr.io
+  IMAGE_NAME: monitoreogps
+  K8S_NAMESPACE: monitoreogps-prod
+  SONAR_PROJECT_KEY: MonitoreoGPS
+
+jobs:
+  build-test-scan:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Run tests with coverage
+      run: |
+        dotnet test \
+          --no-build \
+          --configuration Release \
+          --logger trx \
+          --collect:"XPlat Code Coverage" \
+          --settings coverlet.runsettings \
+          --filter "FullyQualifiedName!~IntegrationTests"
+      env:
+        REDIS_CONNECTION: "localhost:6379"
+        POSTGRES_CONNECTION: "Host=localhost;Database=monitoreogps;Username=postgres;Password=postgres"
+
+    - name: SonarCloud Scan
+      if: github.ref == 'refs/heads/main'
+      uses: SonarSource/sonarcloud-github-action@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        projectKey: ${{ env.SONAR_PROJECT_KEY }}
+        organization: ${{ secrets.SONAR_ORG }}
+        args: >
+          /d:sonar.cs.opencover.reportsPaths=**/coverage.opencover.xml
+          /d:sonar.coverage.exclusions=**/Program.cs,**/Migrations/**
+
+    - name: Publish Test Results
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: |
+          **/*.trx
+          **/coverage.*
+
+  deploy:
+    needs: build-test-scan
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Login to Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ${{ env.DOCKER_REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and Push Docker Image
+      run: |
+        docker build -t ${{ env.DOCKER_REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest .
+        docker push ${{ env.DOCKER_REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
+
+    - name: Setup kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: '1.29.0'
+
+    - name: Deploy to AKS
+      uses: azure/aks-set-context@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+    - name: Apply Kubernetes manifests
+      run: |
+        kubectl config set-context --current --namespace=${{ env.K8S_NAMESPACE }}
+        kubectl apply -f k8s/deployment.yaml
+        kubectl rollout status deployment/routing-service --timeout=90s
+
+    - name: Verify deployment
+      run: |
+        kubectl get pods -n ${{ env.K8S_NAMESPACE }}
+        kubectl get svc -n ${{ env.K8S_NAMESPACE }}

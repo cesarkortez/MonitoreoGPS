@@ -1,0 +1,66 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonitoreoGPS.Shared", "MonitoreoGPS.Shared\MonitoreoGPS.Shared.csproj", "{A2791C36-B438-4A54-ACBA-B5D7D6FA0D86}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeolocationService", "GeolocationService\GeolocationService.csproj", "{48E034D5-3035-4CC7-A2B6-CF23E3615EA7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoutingService", "RoutingService\RoutingService.csproj", "{AB0F106D-138B-4726-9B0D-ED0AA43E31AD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuditService", "AuditService\AuditService.csproj", "{E31031D3-E8A0-460A-A36E-1F0C7BAB4CEF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GpsMockClient", "GpsMockClient\GpsMockClient.csproj", "{D4AAAA1D-7BB3-42AD-866C-3EFE4086F3ED}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{97CF55FD-1590-45DC-AB28-3CD52973E899}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeolocationService.Tests", "GeolocationService.Tests\GeolocationService.Tests.csproj", "{C5C54960-62FB-46B7-8024-C2B77BE5E6C0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuditService.Tests", "AuditService.Tests\AuditService.Tests.csproj", "{C34A972E-AA18-4748-940A-CC51F3A93136}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A2791C36-B438-4A54-ACBA-B5D7D6FA0D86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2791C36-B438-4A54-ACBA-B5D7D6FA0D86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2791C36-B438-4A54-ACBA-B5D7D6FA0D86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2791C36-B438-4A54-ACBA-B5D7D6FA0D86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48E034D5-3035-4CC7-A2B6-CF23E3615EA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48E034D5-3035-4CC7-A2B6-CF23E3615EA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48E034D5-3035-4CC7-A2B6-CF23E3615EA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48E034D5-3035-4CC7-A2B6-CF23E3615EA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB0F106D-138B-4726-9B0D-ED0AA43E31AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB0F106D-138B-4726-9B0D-ED0AA43E31AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB0F106D-138B-4726-9B0D-ED0AA43E31AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB0F106D-138B-4726-9B0D-ED0AA43E31AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E31031D3-E8A0-460A-A36E-1F0C7BAB4CEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E31031D3-E8A0-460A-A36E-1F0C7BAB4CEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E31031D3-E8A0-460A-A36E-1F0C7BAB4CEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E31031D3-E8A0-460A-A36E-1F0C7BAB4CEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4AAAA1D-7BB3-42AD-866C-3EFE4086F3ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4AAAA1D-7BB3-42AD-866C-3EFE4086F3ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4AAAA1D-7BB3-42AD-866C-3EFE4086F3ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4AAAA1D-7BB3-42AD-866C-3EFE4086F3ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5C54960-62FB-46B7-8024-C2B77BE5E6C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5C54960-62FB-46B7-8024-C2B77BE5E6C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5C54960-62FB-46B7-8024-C2B77BE5E6C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5C54960-62FB-46B7-8024-C2B77BE5E6C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C34A972E-AA18-4748-940A-CC51F3A93136}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C34A972E-AA18-4748-940A-CC51F3A93136}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C34A972E-AA18-4748-940A-CC51F3A93136}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C34A972E-AA18-4748-940A-CC51F3A93136}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {40C522DC-80BC-429D-A1E9-50995B629384}
+	EndGlobalSection
+EndGlobal
